@@ -621,6 +621,32 @@ function string.utf8len(input)
     return cnt
 end
 
+function string.strInsert(input, insertStr)
+    local new = {}
+    local len  = string.len(input)
+    local left = len
+    local cnt  = 0
+    local arr  = {0, 0xc0, 0xe0, 0xf0, 0xf8, 0xfc}
+    while left ~= 0 do
+        local start = left
+        local tmp = string.byte(input, -left)
+        local i = #arr
+        while arr[i] do
+            if tmp >= arr[i] then
+                left = left - i
+                break
+            end
+            i = i - 1
+        end
+
+        print(left + 1, start)
+        table.insert(new, string.sub(input, -start, -left -1))
+        cnt = cnt + 1
+    end
+
+    return table.concat(new, insertStr)
+end
+
 function string.formatnumberthousands(num)
     local formatted = tostring(checknumber(num))
     local k
